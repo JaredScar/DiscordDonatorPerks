@@ -56,7 +56,7 @@ AddEventHandler('PatreonDonatorPerks:DenyJob', function(jobName, jobGrade)
 					local perkID = perks[i][3];
 					local datesOfPerks = MySQL.Sync.fetchAll('SELECT id FROM Patreon_Data WHERE identifier = "' ..
 						steamID .. '" AND rankPackage = "' .. rankName .. '" AND acceptedPerkID = ' .. perkID); 
-					local dateNow = os.time() * 60 * 60 * 24 * 30;
+					local dateNow = os.time() + (60 * 60 * 24 * 30);
 					if datesOfPerks ~= nil and #datesOfPerks > 1 then 
 						-- They had this package last month 
 						local patDataID = datesOfPerks[1].id;
@@ -115,7 +115,7 @@ AddEventHandler('PatreonDonatorPerks:GiveJob', function(jobName, jobGrade)
 					local perkID = perks[i][3];
 					local datesOfPerks = MySQL.Sync.fetchAll('SELECT id FROM Patreon_Data WHERE identifier = "' ..
 						steamID .. '" AND rankPackage = "' .. rankName .. '" AND acceptedPerkID = ' .. perkID); 
-					local dateNow = os.time() * 60 * 60 * 24 * 30;
+					local dateNow = os.time() + (60 * 60 * 24 * 30);
 					if datesOfPerks ~= nil and #datesOfPerks > 1 then 
 						-- They had this package last month 
 						local patDataID = datesOfPerks[1].id;
@@ -173,7 +173,7 @@ AddEventHandler('PatreonDonatorPerks:GiveMoney', function(amount)
 					local perkID = perks[i][3];
 					local datesOfPerks = MySQL.Sync.fetchAll('SELECT id FROM Patreon_Data WHERE identifier = "' ..
 						steamID .. '" AND rankPackage = "' .. rankName .. '" AND acceptedPerkID = ' .. perkID); 
-					local dateNow = os.time() * 60 * 60 * 24 * 30;
+					local dateNow = os.time() + (60 * 60 * 24 * 30);
 					if datesOfPerks ~= nil and #datesOfPerks > 1 then 
 						-- They had this package last month 
 						local patDataID = datesOfPerks[1].id;
