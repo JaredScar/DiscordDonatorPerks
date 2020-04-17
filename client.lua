@@ -1,6 +1,6 @@
--------------------------------------
---- PatreonDonatorPerks by Badger ---
--------------------------------------
+-----------------------------------
+--- TebexDonatorPerks by Badger ---
+-----------------------------------
 ESX                           = nil
 
 Citizen.CreateThread(function ()

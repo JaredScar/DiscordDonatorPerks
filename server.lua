@@ -1,6 +1,6 @@
--------------------------------------
---- PatreonDonatorPerks by Badger ---
--------------------------------------
+-----------------------------------
+--- TebexDonatorPerks by Badger ---
+-----------------------------------
 
 --- CONFIG ---
 roleList = {
@@ -54,20 +54,20 @@ AddEventHandler('PatreonDonatorPerks:DenyJob', function(jobName, jobGrade)
 					-- SQL 
 					local rankName = perks[i][2];
 					local perkID = perks[i][3];
-					local datesOfPerks = MySQL.Sync.fetchAll('SELECT id FROM Patreon_Data WHERE identifier = "' ..
+					local datesOfPerks = MySQL.Sync.fetchAll('SELECT id FROM Tebex_Data WHERE identifier = "' ..
 						steamID .. '" AND rankPackage = "' .. rankName .. '" AND acceptedPerkID = ' .. perkID); 
 					local dateNow = os.time() + (60 * 60 * 24 * 30);
 					if datesOfPerks ~= nil and #datesOfPerks > 1 then 
 						-- They had this package last month 
 						local patDataID = datesOfPerks[1].id;
-						MySQL.Async.execute('UPDATE Patreon_Data SET dateReceiveNext = @date WHERE id = @patData', 
+						MySQL.Async.execute('UPDATE Tebex_Data SET dateReceiveNext = @date WHERE id = @patData', 
 							{
 								['@date'] = dateNow,
 								['@patData'] = patDataID
 							});
 					else 
 						-- Never had package, add it 
-						MySQL.Async.execute('INSERT INTO Patreon_Data VALUES (@id, @ident, @playerName, @dateNext, @perkID, @rankPack)', {
+						MySQL.Async.execute('INSERT INTO Tebex_Data VALUES (@id, @ident, @playerName, @dateNext, @perkID, @rankPack)', {
 							['@id'] = 0,
 							['@ident'] = steamID,
 							['@playerName'] = GetPlayerName(src),
@@ -112,20 +112,20 @@ AddEventHandler('PatreonDonatorPerks:GiveJob', function(jobName, jobGrade)
 					-- SQL 
 					local rankName = perks[i][2];
 					local perkID = perks[i][3];
-					local datesOfPerks = MySQL.Sync.fetchAll('SELECT id FROM Patreon_Data WHERE identifier = "' ..
+					local datesOfPerks = MySQL.Sync.fetchAll('SELECT id FROM Tebex_Data WHERE identifier = "' ..
 						steamID .. '" AND rankPackage = "' .. rankName .. '" AND acceptedPerkID = ' .. perkID); 
 					local dateNow = os.time() + (60 * 60 * 24 * 30);
 					if datesOfPerks ~= nil and #datesOfPerks > 1 then 
 						-- They had this package last month 
 						local patDataID = datesOfPerks[1].id;
-						MySQL.Async.execute('UPDATE Patreon_Data SET dateReceiveNext = @date WHERE id = @patData', 
+						MySQL.Async.execute('UPDATE Tebex_Data SET dateReceiveNext = @date WHERE id = @patData', 
 							{
 								['@date'] = dateNow,
 								['@patData'] = patDataID
 							});
 					else 
 						-- Never had package, add it 
-						MySQL.Async.execute('INSERT INTO Patreon_Data VALUES (@id, @ident, @playerName, @dateNext, @perkID, @rankPack)', {
+						MySQL.Async.execute('INSERT INTO Tebex_Data VALUES (@id, @ident, @playerName, @dateNext, @perkID, @rankPack)', {
 							['@id'] = 0,
 							['@ident'] = steamID,
 							['@playerName'] = GetPlayerName(src),
@@ -170,20 +170,20 @@ AddEventHandler('PatreonDonatorPerks:GiveMoney', function(amount)
 					-- SQL 
 					local rankName = perks[i][2];
 					local perkID = perks[i][3];
-					local datesOfPerks = MySQL.Sync.fetchAll('SELECT id FROM Patreon_Data WHERE identifier = "' ..
+					local datesOfPerks = MySQL.Sync.fetchAll('SELECT id FROM Tebex_Data WHERE identifier = "' ..
 						steamID .. '" AND rankPackage = "' .. rankName .. '" AND acceptedPerkID = ' .. perkID); 
 					local dateNow = os.time() + (60 * 60 * 24 * 30);
 					if datesOfPerks ~= nil and #datesOfPerks > 1 then 
 						-- They had this package last month 
 						local patDataID = datesOfPerks[1].id;
-						MySQL.Async.execute('UPDATE Patreon_Data SET dateReceiveNext = @date WHERE id = @patData', 
+						MySQL.Async.execute('UPDATE Tebex_Data SET dateReceiveNext = @date WHERE id = @patData', 
 							{
 								['@date'] = dateNow,
 								['@patData'] = patDataID
 							});
 					else 
 						-- Never had package, add it 
-						MySQL.Async.execute('INSERT INTO Patreon_Data VALUES (@id, @ident, @playerName, @dateNext, @perkID, @rankPack)', {
+						MySQL.Async.execute('INSERT INTO Tebex_Data VALUES (@id, @ident, @playerName, @dateNext, @perkID, @rankPack)', {
 							['@id'] = 0,
 							['@ident'] = steamID,
 							['@playerName'] = GetPlayerName(src),
@@ -224,7 +224,7 @@ AddEventHandler('PatreonDonatorPerks:CheckPerks', function()
 						-- Now check if they got their perks already 
 						local maxPerks = #roleList[i] - 2;
 						local rankName = roleList[i][1];
-						local currentPerkCount = MySQL.Sync.fetchScalar('SELECT COUNT(*) FROM Patreon_Data WHERE ' ..
+						local currentPerkCount = MySQL.Sync.fetchScalar('SELECT COUNT(*) FROM Tebex_Data WHERE ' ..
 							'identifier = "' .. steamID .. '" AND rankPackage = "' .. rankName .. '"');
 						if (currentPerkCount == nil or currentPerkCount < maxPerks) then 
 							-- Offer them their perks
@@ -259,7 +259,7 @@ AddEventHandler('PatreonDonatorPerks:CheckPerks', function()
 							-- We have finished giving them the offers
 						else 
 							-- Check if the month has pasted and if so, update the date and offer perks
-							local datesOfPerks = MySQL.Sync.fetchAll('SELECT dateReceiveNext, id FROM Patreon_Data WHERE identifier = "' ..
+							local datesOfPerks = MySQL.Sync.fetchAll('SELECT dateReceiveNext, id FROM Tebex_Data WHERE identifier = "' ..
 								steamID .. '" AND rankPackage = "' .. rankName .. '"'); 
 							local dateNow = os.time();
 							for kk = 1, #datesOfPerks do 
@@ -304,7 +304,7 @@ AddEventHandler('PatreonDonatorPerks:CheckPerks', function()
 		print("[PatreonDonatorPerks] " .. GetPlayerName(src) .. " has not gotten their (possible) donator perks cause their discord was not detected...")
 	end
 	-- We update their name in MySQL down here 
-	MySQL.Async.execute('UPDATE Patreon_Data SET playerName = @pname WHERE identifier = @sid', {['@pname'] = GetPlayerName(src), ['@sid'] = steamID});
+	MySQL.Async.execute('UPDATE Tebex_Data SET playerName = @pname WHERE identifier = @sid', {['@pname'] = GetPlayerName(src), ['@sid'] = steamID});
 end)
 
 function ExtractIdentifiers(src)
