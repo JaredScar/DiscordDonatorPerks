@@ -109,7 +109,6 @@ AddEventHandler('PatreonDonatorPerks:GiveJob', function(jobName, jobGrade)
 				local perkGrade = perks[i][1][3];
 				if perkJob == jobName and jobGrade == perkGrade then 
 					-- This is a valid request, give them it and remove this index 
-					xPlayer.setJob(jobName, tonumber(perkGrade));
 					-- SQL 
 					local rankName = perks[i][2];
 					local perkID = perks[i][3];
@@ -135,6 +134,7 @@ AddEventHandler('PatreonDonatorPerks:GiveJob', function(jobName, jobGrade)
 							['@rankPack'] = rankName
 						});
 					end
+					xPlayer.setJob(jobName, tonumber(perkGrade));
 					removeIndex = i;
 					break;
 				end
@@ -167,7 +167,6 @@ AddEventHandler('PatreonDonatorPerks:GiveMoney', function(amount)
 				local perkMoney = perks[i][1][2];
 				if perkMoney == amount then 
 					-- This is a valid request, give them it and remove this index 
-					xPlayer.addMoney(amount);
 					-- SQL 
 					local rankName = perks[i][2];
 					local perkID = perks[i][3];
@@ -193,6 +192,7 @@ AddEventHandler('PatreonDonatorPerks:GiveMoney', function(amount)
 							['@rankPack'] = rankName
 						});
 					end
+					xPlayer.addMoney(amount);
 					removeIndex = i;
 					break;
 				end
