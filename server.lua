@@ -215,7 +215,7 @@ AddEventHandler('PatreonDonatorPerks:CheckPerks', function()
 	local identifierDiscord = ExtractIdentifiers(src).discord;
 	local steamID = ExtractIdentifiers(src).steam; 
 	if identifierDiscord then
-		local roleIDs = exports.discord_perms:GetRoles(src)
+		local roleIDs = exports.Badger_Discord_API:GetDiscordRoles(src)
 		if not (roleIDs == false) then
 			for i = 1, #roleList do
 				for j = 1, #roleIDs do
