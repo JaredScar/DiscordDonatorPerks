@@ -54,7 +54,7 @@ end)
 RegisterNetEvent('PatreonDonatorPerks:OfferJob')
 AddEventHandler('PatreonDonatorPerks:OfferJob', function(src, label, jobName, jobGrade)
 	-- Offer them their job 
-	TriggerClientEvent('Perksy', src, {'Job', label, jobName, jobGrade});
+	TriggerClientEvent('Perksy', src, {'job', label, jobName, jobGrade});
 end)
 RegisterNetEvent('PatreonDonatorPerks:DenyJob')
 AddEventHandler('PatreonDonatorPerks:DenyJob', function(jobName, jobGrade)
@@ -69,7 +69,7 @@ AddEventHandler('PatreonDonatorPerks:DenyJob', function(jobName, jobGrade)
 		for i = 1, #perks do 
 			-- Perks 
 			local perkType = perks[i][1][1];
-			if perkType == 'Job' then 
+			if perkType:lower() == 'job' or perkType:lower() == 'gang' then 
 				local perkJob = perks[i][1][2];
 				local perkGrade = perks[i][1][3];
 				if perkJob == jobName and jobGrade == perkGrade then 
@@ -271,7 +271,7 @@ AddEventHandler('PatreonDonatorPerks:CheckPerks', function()
 								for l = 1, #offer do 
 									local offerEvent = offer[l];
 									if type(offerEvent) == 'table' then 
-										if offerEvent[1] == 'Job' then 
+										if offerEvent[1]:lower() == 'job' or offerEvent[1]:lower() == 'gang' then 
 											-- Give them job 2 args 
 											TriggerEvent('PatreonDonatorPerks:OfferJob', src, offerName, offerEvent[2], offerEvent[3]);
 										end
@@ -306,7 +306,7 @@ AddEventHandler('PatreonDonatorPerks:CheckPerks', function()
 										for l = 1, #offer do 
 											local offerEvent = offer[l];
 											if type(offerEvent) == 'table' then 
-												if offerEvent[1] == 'Job' then 
+												if offerEvent[1]:lower() == 'job' or offerEvent[1]:lower() == 'gang' then 
 													-- Give them job 2 args 
 													TriggerEvent('PatreonDonatorPerks:OfferJob', src, offerName, offerEvent[2], offerEvent[3]);
 												end
