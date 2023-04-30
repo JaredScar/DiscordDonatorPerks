@@ -9,25 +9,18 @@ Citizen.CreateThread(function ()
 		Citizen.Wait(0)
 	end
 end)
-AddEventHandler('playerSpawned', function()
-	if not alreadyTriggered then 
-		TriggerServerEvent('PatreonDonatorPerks:CheckPerks');
-		alreadyTriggered = true;
-	end
+Citizen.CreateThread(function()
+	TriggerServerEvent("PatreonDonatorPerks:CheckPerks");
 end)
-alreadyTriggered = false;
 offers = {}
 RegisterNetEvent('Perksy')
 AddEventHandler('Perksy', function(offer)
-	print("AddOffer was triggered");
 	local temp = {}
 	for i = 1, #offers do 
 		table.insert(temp, offers[i])
 	end
 	table.insert(temp, offer);
 	offers = temp;
-	print(#offers);
-	print("Temp: " .. #temp);
 end)
 RegisterNetEvent('PatreonDonatorPerks:Client:RemoveFromStack')
 AddEventHandler('PatreonDonatorPerks:Client:RemoveFromStack', function()
@@ -51,7 +44,7 @@ Citizen.CreateThread(function()
 				Draw2DText(.5, .5, '~w~You have a ~g~' .. nameLab .. ' ~w~donator perk ', 1.0);
 				Draw2DText(.5, .55, '~y~Press ~b~ARROW_UP ~y~to accept or ~b~ARROW_DOWN ~y~to reject on this character...', 1.0);
 			end
-			if label == 'Job' then 
+			if label:lower() == 'job' or label:lower() == 'gang' then 
 				local nameLab = offers[1][2];
 				local jobName = offers[1][3];
 				local jobGrade = offers[1][4];
@@ -74,7 +67,7 @@ Citizen.CreateThread(function()
 					TriggerServerEvent('PatreonDonatorPerks:GiveMoney', amt);
 					Wait(500);
 				end
-				if label == 'Job' then 
+				if label:lower() == 'job' or label:lower() == 'gang' then 
 					local nameLab = offers[1][2];
 					local jobName = offers[1][3];
 					local jobGrade = offers[1][4];
@@ -84,7 +77,7 @@ Citizen.CreateThread(function()
 				TriggerEvent('PatreonDonatorPerks:Client:RemoveFromStack');
 			end
 			if (IsControlJustPressed(0, 173)) then -- They pressed ARROW_DOWN 
-				if label == 'Job' then 
+				if label:lower() == 'job' or label:lower() == 'gang' then 
 					local jobName = offers[1][3];
 					local jobGrade = offers[1][4];
 					TriggerServerEvent('PatreonDonatorPerks:DenyJob', jobName, jobGrade);
@@ -111,4 +104,3 @@ function Draw2DText(x, y, text, scale)
     AddTextComponentString(text)
     DrawText(x, y)
 end
-print("We get to bottom of client.lua");

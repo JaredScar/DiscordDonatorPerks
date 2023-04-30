@@ -3,23 +3,48 @@
 -------------------------------------
 
 --- CONFIG ---
-roleList = {
-	{"Bronze-Tier", 1, {"$1,000,000 voucher", {'Money', 1000000}} 
-	}, -- Bronze Tier 
-	{"Silver-Tier", 1, {"$5,000,000 voucher",{'Money', 5000000}} 
-	}, -- Silver Tier 
-	{"Gold-Tier", 1, 
-		{"$15,000,000 voucher",{'Money', 15000000}}, 
-		{"Invitation to Mafia [Gang]", {'Job', 'mafia', 0}},
-		{"Invitation to LS Kings [Gang]", {'Job', 'woodyguns', 0}},
-		{"Invitation to Sons of Anarchy [Gang]", {'Job', 'lazy', 0}},
-		{"Invitation to Black Diamond Cartel [Gang]", {'Job', 'stevestacos', 0}}
-	}, -- Gold Tier 
-}
+roleList = Config.RoleList;
 
 --- CODE ---
 ESX = nil;
-TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end);
+QBCore = nil;
+if (Config.Use_ESX) then 
+	TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end);
+else
+	QBCore = exports['qb-core']:GetCoreObject(); 
+end
+function setPlayerJob(src, jobName, jobGrade)
+	if (Config.Use_QBCore) then 
+		local qbPlayer = QBCore.Functions.GetPlayer(src);
+		qbPlayer.SetJob(jobName, jobGrade);
+	else
+		local xPlayer = ESX.GetPlayerFromId(src);
+		xPlayer.setJob(jobName, tonumber(jobGrade));
+	end
+end
+function setPlayerGang(src, gangName, gangGrade)
+	if (Config.Use_QBCore) then 
+		-- QBCore
+		local qbPlayer = QBCore.Functions.GetPlayer(src);
+		qbPlayer.SetJob(gangName, gangGrade);
+	else 
+		-- ESX
+		local xPlayer = ESX.GetPlayerFromId(src);
+		xPlayer.setJob(gangName, tonumber(gangGrade));
+	end
+end
+function addPlayerMoney(src, money)
+	if (Config.Use_QBCore) then 
+		-- QBCore
+		local qbPlayer = QBCore.Functions.GetPlayer(src);
+		qbPlayer.AddMoney("cash", money, "DiscordDonatorPerks");
+	else 
+		-- ESX
+		local xPlayer = ESX.GetPlayerFromId(src);
+		xPlayer.addMoney(amount);
+	end
+end
+
 RegisterNetEvent('PatreonDonatorPerks:OfferMoney')
 AddEventHandler('PatreonDonatorPerks:OfferMoney', function(src, label, amount)
 	-- Offer them their money
@@ -35,7 +60,6 @@ RegisterNetEvent('PatreonDonatorPerks:DenyJob')
 AddEventHandler('PatreonDonatorPerks:DenyJob', function(jobName, jobGrade)
 	-- Check to see if they have value perk queued for this 
 	local src = source;
-	local xPlayer = ESX.GetPlayerFromId(src);
 	local steamID = ExtractIdentifiers(src).steam;
 	-- table.insert(perkQueue[src], {offerDetails, rankName, i});
 	local removeIndex = nil;
@@ -94,7 +118,6 @@ RegisterNetEvent('PatreonDonatorPerks:GiveJob')
 AddEventHandler('PatreonDonatorPerks:GiveJob', function(jobName, jobGrade)
 	-- Check to see if they have value perk queued for this 
 	local src = source;
-	local xPlayer = ESX.GetPlayerFromId(src);
 	local steamID = ExtractIdentifiers(src).steam;
 	-- table.insert(perkQueue[src], {offerDetails, rankName, i});
 	local removeIndex = nil;
@@ -104,7 +127,7 @@ AddEventHandler('PatreonDonatorPerks:GiveJob', function(jobName, jobGrade)
 		for i = 1, #perks do 
 			-- Perks 
 			local perkType = perks[i][1][1];
-			if perkType == 'Job' then 
+			if perkType:lower() == 'job' or perkType:lower() == 'gang' then 
 				local perkJob = perks[i][1][2];
 				local perkGrade = perks[i][1][3];
 				if perkJob == jobName and jobGrade == perkGrade then 
@@ -134,7 +157,11 @@ AddEventHandler('PatreonDonatorPerks:GiveJob', function(jobName, jobGrade)
 							['@rankPack'] = rankName
 						});
 					end
-					xPlayer.setJob(jobName, tonumber(perkGrade));
+					if (perkType:lower() == 'gang') then 
+						setPlayerGang(src, jobName, tonumber(perkGrade));
+					else 
+						setPlayerJob(src, jobName, tonumber(perkGrade));
+					end
 					removeIndex = i;
 					break;
 				end
@@ -153,7 +180,6 @@ RegisterNetEvent('PatreonDonatorPerks:GiveMoney')
 AddEventHandler('PatreonDonatorPerks:GiveMoney', function(amount)
 	-- Check to see if they have valid perk queued for this 
 	local src = source;
-	local xPlayer = ESX.GetPlayerFromId(src);
 	local steamID = ExtractIdentifiers(src).steam;
 	-- table.insert(perkQueue[src], {offerDetails, rankName, i});
 	local removeIndex = nil;
@@ -192,7 +218,7 @@ AddEventHandler('PatreonDonatorPerks:GiveMoney', function(amount)
 							['@rankPack'] = rankName
 						});
 					end
-					xPlayer.addMoney(amount);
+					addPlayerMoney(src, amount);
 					removeIndex = i;
 					break;
 				end
